@@ -26,7 +26,8 @@ class AccountMoveLine(models.Model):
                     line.product_id.product_tmpl_id._get_product_analytic_accounts()
                 )
                 ana_account = ana_accounts[INV_TYPE_MAP[inv_type]]
-                line.analytic_distribution = {ana_account.id: 100}
+                if ana_account.id:
+                    line.analytic_distribution = {ana_account.id: 100}
         return res
 
     @api.model_create_multi
@@ -41,5 +42,6 @@ class AccountMoveLine(models.Model):
                 product = self.env["product.product"].browse(vals.get("product_id"))
                 ana_accounts = product.product_tmpl_id._get_product_analytic_accounts()
                 ana_account = ana_accounts[INV_TYPE_MAP[inv_type]]
-                vals["analytic_distribution"] = {ana_account.id: 100}
+                if ana_account.id:
+                    vals["analytic_distribution"] = {ana_account.id: 100}
         return super().create(vals_list)
